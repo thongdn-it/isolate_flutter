@@ -1,0 +1,12 @@
+name: isolate_flutter
+description: IsolateFlutter provides a way to launch 'dart:isolate' library in Flutter (iOS and Android).
+version: 1.0.0
+homepage: https://github.com/thongdn-it/isolate_flutter/tree/master/isolate_flutter
+repository: https://github.com/thongdn-it/isolate_flutter/tree/master/isolate_flutter
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter

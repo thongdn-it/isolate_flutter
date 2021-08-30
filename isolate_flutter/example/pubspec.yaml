@@ -1,0 +1,17 @@
+name: example
+description: IsolateFlutter example.
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  isolate_flutter:
+    path: ../
+
+flutter:
+  uses-material-design: true
