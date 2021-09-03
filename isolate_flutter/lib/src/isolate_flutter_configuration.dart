@@ -8,7 +8,7 @@ class IsolateFlutterConfiguration<Q, R> {
   final ComputeCallback<Q, R> callback;
   final Q message;
   final SendPort resultPort;
-  final String debugLabel;
+  final String? debugLabel;
 
   IsolateFlutterConfiguration(
     this.callback,

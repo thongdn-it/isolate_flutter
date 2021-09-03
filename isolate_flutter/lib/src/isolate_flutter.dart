@@ -12,13 +12,13 @@ import 'package:isolate_flutter/src/isolate_flutter_configuration.dart';
 ///
 /// You can create multiple isolate and manager it like start, pause, resume, stop.
 class IsolateFlutter {
-  IsolateFlutterStatus _status;
+  IsolateFlutterStatus? _status;
 
-  Isolate _isolate;
+  Isolate? _isolate;
 
-  ReceivePort _resultPort, _exitPort, _errorPort;
+  ReceivePort? _resultPort, _exitPort, _errorPort;
 
-  Completer _completer;
+  late Completer _completer;
 
   IsolateFlutter._();
 
@@ -36,7 +36,9 @@ class IsolateFlutter {
   ///
   /// The `debugLabel` argument can be specified to provide a name to add to the [Timeline].
   /// This is useful when in debuggers and logging.
-  static Future<IsolateFlutter> create<Q, R>(ComputeCallback<Q, R> callback, Q message, {String debugLabel}) async {
+  static Future<IsolateFlutter?> create<Q, R>(
+      ComputeCallback<Q, R> callback, Q message,
+      {String? debugLabel}) async {
     final _isolateFlutter = IsolateFlutter._();
 
     if (_isolateFlutter._status != null) {
@@ -44,7 +46,8 @@ class IsolateFlutter {
       return null;
     }
 
-    final _debugLabel = debugLabel ?? 'IsolateFlutter_${_isolateFlutter.hashCode}';
+    final _debugLabel =
+        debugLabel ?? 'IsolateFlutter_${_isolateFlutter.hashCode}';
 
     // Create ReceivePort
     _isolateFlutter._resultPort = ReceivePort();
@@ -60,32 +63,32 @@ class IsolateFlutter {
       IsolateFlutterConfiguration<Q, FutureOr<R>>(
         callback,
         message,
-        _isolateFlutter._resultPort.sendPort,
+        _isolateFlutter._resultPort!.sendPort,
         _debugLabel,
       ),
-      onError: _isolateFlutter._errorPort.sendPort,
-      onExit: _isolateFlutter._exitPort.sendPort,
+      onError: _isolateFlutter._errorPort?.sendPort,
+      onExit: _isolateFlutter._exitPort?.sendPort,
       debugName: _debugLabel,
       paused: true,
     );
 
     // create listen
-    _isolateFlutter._errorPort.listen((dynamic errorData) {
+    _isolateFlutter._errorPort?.listen((dynamic errorData) {
       if (!_isolateFlutter._completer.isCompleted) {
         _isolateFlutter._completer.completeError(errorData);
         _isolateFlutter.stop();
       }
     });
 
-    _isolateFlutter._exitPort.listen((dynamic exitData) {
+    _isolateFlutter._exitPort?.listen((dynamic exitData) {
       if (!_isolateFlutter._completer.isCompleted) {
-        _isolateFlutter._completer
-            .completeError(Exception('IsolateFlutter -> Isolate exited without result or error.'));
+        _isolateFlutter._completer.completeError(Exception(
+            'IsolateFlutter -> Isolate exited without result or error.'));
         _isolateFlutter.stop();
       }
     });
 
-    _isolateFlutter._resultPort.listen((dynamic resultData) {
+    _isolateFlutter._resultPort?.listen((dynamic resultData) {
       assert(resultData == null || resultData is R);
       if (!_isolateFlutter._completer.isCompleted) {
         _isolateFlutter._completer.complete(resultData as R);
@@ -112,8 +115,11 @@ class IsolateFlutter {
   ///
   /// The `debugLabel` argument can be specified to provide a name to add to the [Timeline].
   /// This is useful when in debuggers and logging.
-  static Future<R> createAndStart<Q, R>(ComputeCallback<Q, R> callback, Q message, {String debugLabel}) async {
-    final _isolateFlutter = await IsolateFlutter.create(callback, message, debugLabel: debugLabel);
+  static Future<R?> createAndStart<Q, R>(
+      ComputeCallback<Q, R> callback, Q message,
+      {String? debugLabel}) async {
+    final _isolateFlutter =
+        await IsolateFlutter.create(callback, message, debugLabel: debugLabel);
     if (_isolateFlutter != null) {
       return _isolateFlutter.start();
     } else {
@@ -133,14 +139,14 @@ class IsolateFlutter {
   /// Pause the current isolate
   void pause() {
     _status = IsolateFlutterStatus.Paused;
-    _isolate.pause(_isolate?.pauseCapability);
+    _isolate?.pause(_isolate?.pauseCapability);
   }
 
   /// Resume the current isolate
   void resume() {
     if (_isolate?.pauseCapability != null) {
       _status = IsolateFlutterStatus.Running;
-      _isolate.resume(_isolate.pauseCapability);
+      _isolate?.resume(_isolate!.pauseCapability!);
     }
   }
 
@@ -161,11 +167,14 @@ class IsolateFlutter {
 
   bool get isRunning => _status == IsolateFlutterStatus.Running;
   bool get isPaused => _status == IsolateFlutterStatus.Paused;
-  bool get isStopped => _status == null || _status == IsolateFlutterStatus.Stopped;
+  bool get isStopped =>
+      _status == null || _status == IsolateFlutterStatus.Stopped;
 }
 
-Future<void> _spawn<Q, R>(IsolateFlutterConfiguration<Q, FutureOr<R>> configuration) async {
-  final FutureOr<R> applicationResult = await (configuration.apply() as FutureOr<R>);
+Future<void> _spawn<Q, R>(
+    IsolateFlutterConfiguration<Q, FutureOr<R>> configuration) async {
+  final FutureOr<R> applicationResult =
+      await (configuration.apply() as FutureOr<R>);
   final result = await applicationResult;
   configuration.resultPort.send(result);
 }

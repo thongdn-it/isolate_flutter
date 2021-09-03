@@ -22,14 +22,16 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
+
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  IsolateFlutter _isolateFlutter;
+  IsolateFlutter? _isolateFlutter;
 
   @override
   Widget build(BuildContext context) {
@@ -41,33 +43,33 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton.icon(
+            TextButton.icon(
               label: Text('Create'),
               icon: Icon(Icons.create),
               onPressed: _onCreate,
             ),
-            FlatButton.icon(
+            TextButton.icon(
               label: Text('Start'),
               icon: Icon(Icons.play_arrow),
               onPressed: _onStart,
             ),
-            FlatButton.icon(
+            TextButton.icon(
               label: Text('Pause'),
               icon: Icon(Icons.pause),
               onPressed: _onPause,
             ),
-            FlatButton.icon(
+            TextButton.icon(
               label: Text('Resume'),
               icon: Icon(Icons.play_arrow),
               onPressed: _onResume,
             ),
-            FlatButton.icon(
+            TextButton.icon(
               label: Text('Stop'),
               icon: Icon(Icons.stop),
               onPressed: _onStop,
             ),
             Text('--- OR ---'),
-            FlatButton.icon(
+            TextButton.icon(
               label: Text('Create and start'),
               icon: Icon(Icons.playlist_play),
               onPressed: _onCreateAndStart,
@@ -106,12 +108,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onCreateAndStart() async {
     print('Create And Start Isolate');
-    final _value = await IsolateFlutter.createAndStart(_testFunction, 'Hello World');
+    final _value =
+        await IsolateFlutter.createAndStart(_testFunction, 'Hello World');
     print(_value);
   }
 
   static Future<String> _testFunction(String message) async {
-    Timer.periodic(Duration(seconds: 1), (timer) => print('$message - ${timer.tick}'));
+    Timer.periodic(
+        Duration(seconds: 1), (timer) => print('$message - ${timer.tick}'));
     await Future.delayed(Duration(seconds: 30));
     return '_testFunction finish';
   }
