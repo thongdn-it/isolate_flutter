@@ -5,10 +5,10 @@ void main(List<String> args) async {
   final _response = await IsolateHttp().get(
       'https://www.googleapis.com/auth/books/v1/volumes',
       query: {'q': 'flutter'});
-  if (_response.statusCode == 200) {
-    final _bodyJson = _response.bodyJson;
+  if (_response?.statusCode == 200) {
+    final _bodyJson = _response?.bodyJson;
     print(_bodyJson);
   } else {
-    print('Request failed with status: ${_response.statusCode}.');
+    print('Request failed with status: ${_response?.statusCode}.');
   }
 }
