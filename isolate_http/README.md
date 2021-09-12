@@ -34,6 +34,14 @@ final _response = await IsolateHttp().delete('https://example.com/product/1',
 print(_response);
 ```
 
+*** You can set a timeout and debug label for your request when creating an IsolateHttp like:
+
+```dart
+IsolateHttp(timeout: Duration(seconds: 30), debugLabel: 'get_products')
+```
+
+If timeout, its returns you an IsolateHttpResponse with status code 408 (Request Timeout).
+
 ## Author
 
 IsolateHttp is developed by Thong Dang. You can contact me at thongdn.it@gmail.com

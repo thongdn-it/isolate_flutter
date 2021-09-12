@@ -11,6 +11,13 @@ class IsolateHttpResponse {
   /// The status code of the response as int.
   final int statusCode;
 
+  /// The response using for Isolate Http.
+  ///
+  /// [body] The body of the response as a String.
+  ///
+  /// [statusCode] The status code of the response as int.
+  ///
+  /// [headers] The headers of the response as a Map<String, String>.
   IsolateHttpResponse(this.body, this.statusCode, this.headers);
 
   /// Return the body as as Json (dynamic).

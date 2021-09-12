@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:http/http.dart';
 
 import 'package:isolate_flutter/isolate_flutter.dart';
@@ -11,7 +13,19 @@ import 'package:isolate_http/src/isolate_http_response.dart';
 ///
 /// [head], [get], [post], [put], [delete], [send]
 class IsolateHttp {
-  const IsolateHttp();
+  final Duration? _timeout;
+  final String? _debugLabel;
+
+  /// Create an IsolateHttp
+  ///
+  /// [timeout] time limit for an request.
+  /// If this request does not complete before [timeout] has passed,
+  /// Its returns you an IsolateHttpResponse with status code 408 (Request Timeout).
+  ///
+  /// [debugLabel] this name in debuggers and logging for IsolateHttp.
+  IsolateHttp({Duration? timeout, String? debugLabel})
+      : _timeout = timeout,
+        _debugLabel = debugLabel;
 
   /// Sends an HTTP HEAD request with the given headers to the given URL.
   Future<IsolateHttpResponse?> head(String url,
@@ -71,9 +85,20 @@ class IsolateHttp {
 
   /// Sends an [IsolateHttpRequest] and returns the [IsolateHttpResponse].
   Future<IsolateHttpResponse?> send(IsolateHttpRequest request) async {
-    final _isolateHttpResponse =
-        await IsolateFlutter.createAndStart(_call, request);
-    return _isolateHttpResponse;
+    try {
+      final _isolateRequest = IsolateFlutter.createAndStart(_call, request,
+          debugLabel: _debugLabel);
+
+      if (_timeout == null) {
+        return await _isolateRequest;
+      } else {
+        return await _isolateRequest.timeout(_timeout!);
+      }
+    } on TimeoutException catch (e) {
+      return IsolateHttpResponse(e.toString(), 408, request.headers ?? {});
+    } on Exception catch (e) {
+      return IsolateHttpResponse(e.toString(), 520, request.headers ?? {});
+    }
   }
 }
 
