@@ -14,27 +14,27 @@ class IsolateHttp {
   const IsolateHttp();
 
   /// Sends an HTTP HEAD request with the given headers to the given URL.
-  Future<IsolateHttpResponse> head(String url,
-      {Map<String, String> query, Map<String, String> headers}) async {
+  Future<IsolateHttpResponse?> head(String url,
+      {Map<String, String>? query, Map<String, String>? headers}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.head, query: query, headers: headers);
     return send(_isolateHttpRequest);
   }
 
   /// Sends an HTTP GET request with the given headers to the given URL.
-  Future<IsolateHttpResponse> get(String url,
-      {Map<String, String> query, Map<String, String> headers}) async {
+  Future<IsolateHttpResponse?> get(String url,
+      {Map<String, String>? query, Map<String, String>? headers}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.get, query: query, headers: headers);
     return send(_isolateHttpRequest);
   }
 
   /// Sends an HTTP POST request with the given headers and body to the given URL.
-  Future<IsolateHttpResponse> post(String url,
-      {Map<String, String> query,
-      Map<String, String> headers,
-      Map<String, dynamic> body,
-      List<HttpFile> files}) async {
+  Future<IsolateHttpResponse?> post(String url,
+      {Map<String, String>? query,
+      Map<String, String>? headers,
+      Map<String, dynamic>? body,
+      List<HttpFile>? files}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.post,
         query: query,
@@ -45,11 +45,11 @@ class IsolateHttp {
   }
 
   /// Sends an HTTP PUT request with the given headers and body to the given URL.
-  Future<IsolateHttpResponse> put(String url,
-      {Map<String, String> query,
-      Map<String, String> headers,
-      Map<String, dynamic> body,
-      List<HttpFile> files}) async {
+  Future<IsolateHttpResponse?> put(String url,
+      {Map<String, String>? query,
+      Map<String, String>? headers,
+      Map<String, dynamic>? body,
+      List<HttpFile>? files}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.put,
         query: query,
@@ -60,24 +60,25 @@ class IsolateHttp {
   }
 
   /// Sends an HTTP DELETE request with the given headers to the given URL.
-  Future<IsolateHttpResponse> delete(String url,
-      {Map<String, String> query,
-      Map<String, String> headers,
-      Map<String, dynamic> body}) async {
+  Future<IsolateHttpResponse?> delete(String url,
+      {Map<String, String>? query,
+      Map<String, String>? headers,
+      Map<String, dynamic>? body}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.delete, query: query, headers: headers, body: body);
     return send(_isolateHttpRequest);
   }
 
   /// Sends an [IsolateHttpRequest] and returns the [IsolateHttpResponse].
-  Future<IsolateHttpResponse> send(IsolateHttpRequest request) async {
+  Future<IsolateHttpResponse?> send(IsolateHttpRequest request) async {
     final _isolateHttpResponse =
         await IsolateFlutter.createAndStart(_call, request);
     return _isolateHttpResponse;
   }
 }
 
-Future<IsolateHttpResponse> _call(IsolateHttpRequest isolateHttpRequest) async {
+Future<IsolateHttpResponse?> _call(
+    IsolateHttpRequest isolateHttpRequest) async {
   final _request = await isolateHttpRequest.toRequest();
   if (_request != null) {
     final streamedResponse = await _request.send();

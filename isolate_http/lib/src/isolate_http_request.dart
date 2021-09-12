@@ -16,16 +16,16 @@ class IsolateHttpRequest {
   final String method;
 
   /// List [queryParameters] in [http]
-  final Map<String, String> query;
+  final Map<String, String>? query;
 
   /// The headers of the request.
-  final Map<String, String> headers;
+  final Map<String, String>? headers;
 
   /// The body of the request.
-  final Map<String, dynamic> body;
+  final Map<String, dynamic>? body;
 
   /// List of files to be uploaded of the request.
-  final List<HttpFile> files;
+  final List<HttpFile>? files;
 
   IsolateHttpRequest(
     this.url, {
@@ -36,7 +36,7 @@ class IsolateHttpRequest {
     this.files,
   });
 
-  Uri get uri {
+  Uri? get uri {
     String _requestUrl = url;
     if (query?.isNotEmpty == true) {
       final _queryString = Uri(queryParameters: query).query;
@@ -46,20 +46,20 @@ class IsolateHttpRequest {
   }
 
   /// Convert [IsolateHttpRequest] to [BaseRequest] (The base class for HTTP requests).
-  Future<BaseRequest> toRequest() async {
+  Future<BaseRequest?> toRequest() async {
     final _uri = uri;
     if (_uri != null) {
       if (files?.isNotEmpty == true) {
         MultipartRequest _request = MultipartRequest(method, _uri);
         if (headers?.isNotEmpty == true) {
-          _request.headers.addAll(headers);
+          _request.headers.addAll(headers!);
         }
 
         body?.forEach((key, value) {
           _request.fields[key] = jsonEncode(value);
         });
 
-        for (var file in files) {
+        for (var file in files!) {
           final _file = await file.toMultipartFile();
           if (_file != null) {
             _request.files.add(_file);
@@ -69,7 +69,7 @@ class IsolateHttpRequest {
       } else {
         Request _request = Request(method, _uri);
         if (headers?.isNotEmpty == true) {
-          _request.headers.addAll(headers);
+          _request.headers.addAll(headers!);
         }
         if (body?.isNotEmpty == true) {
           _request.body = jsonEncode(body);
