@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:isolate_http/src/http_file.dart';
 import 'package:isolate_http/src/http_method.dart';
 
+/// The request using for Isolate Http.
 class IsolateHttpRequest {
   /// The url to which the request will be sent.
   final String url;
@@ -27,6 +28,19 @@ class IsolateHttpRequest {
   /// List of files to be uploaded of the request.
   final List<HttpFile>? files;
 
+  /// The request using for Isolate Http.
+  ///
+  /// [url] The url to which the request will be sent.
+  ///
+  /// [method] The [HttpMethod] of the request.
+  ///
+  /// [query] List [queryParameters] in [http]
+  ///
+  /// [headers] The headers of the request.
+  ///
+  /// [body] The body of the request.
+  ///
+  /// [files] List of files (HttpFile) to be uploaded of the request.
   IsolateHttpRequest(
     this.url, {
     this.method = HttpMethod.get,
@@ -36,6 +50,7 @@ class IsolateHttpRequest {
     this.files,
   });
 
+  /// Convert [url] and [query] to full link request (Uri)
   Uri? get uri {
     String _requestUrl = url;
     if (query?.isNotEmpty == true) {
