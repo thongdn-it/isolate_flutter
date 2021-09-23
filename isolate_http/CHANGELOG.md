@@ -1,4 +1,8 @@
 
+# [2.1.1] - 23/09/2021
+
+* [Fix] missing `content-type` header in post method.
+
 # [2.1.0] - 12/09/2021
 
 * Support timeout, debug label.
