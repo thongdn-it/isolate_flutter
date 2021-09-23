@@ -88,6 +88,7 @@ class IsolateHttpRequest {
         }
         if (body?.isNotEmpty == true) {
           _request.body = jsonEncode(body);
+          _request.headers['content-type'] = 'application/json';
         }
         return _request;
       }

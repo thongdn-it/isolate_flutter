@@ -1,6 +1,6 @@
 name: isolate_http
 description: IsolateHttp provides a way to launch 'http' library in Isolate with IsolatesFlutter. 
-version: 2.1.0
+version: 2.1.1
 homepage: https://github.com/thongdn-it/isolate_flutter/tree/master/isolate_http
 repository: https://github.com/thongdn-it/isolate_flutter/tree/master/isolate_http
 
