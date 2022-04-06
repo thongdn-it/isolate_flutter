@@ -16,7 +16,7 @@
 
 [![Pub][isolate_image_compress_pub_v_image_url]][isolate_image_compress_pub_url]
 
-IsolateImageCompress is a package to compress and resize the images in isolate ([IsolateFlutter][isolate_flutter_pub_url]).
+[IsolateImageCompress](isolate_image_compress) is a package to compress and resize the images in isolate ([IsolateFlutter][isolate_flutter_pub_url]).
 
 ## Author
 
