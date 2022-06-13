@@ -4,10 +4,11 @@ import 'package:http/http.dart';
 
 import 'package:isolate_flutter/isolate_flutter.dart';
 
-import 'package:isolate_http/src/http_file.dart';
-import 'package:isolate_http/src/http_method.dart';
-import 'package:isolate_http/src/isolate_http_request.dart';
-import 'package:isolate_http/src/isolate_http_response.dart';
+import 'log_utils.dart';
+import 'http_file.dart';
+import 'http_method.dart';
+import 'isolate_http_request.dart';
+import 'isolate_http_response.dart';
 
 /// Isolate Http
 ///
@@ -15,6 +16,23 @@ import 'package:isolate_http/src/isolate_http_response.dart';
 class IsolateHttp {
   final Duration? _timeout;
   final String? _debugLabel;
+
+  Function(String)? _logCurlListener;
+  set listener(Function(String)? listener) {
+    _logCurlListener = listener;
+  }
+
+  void _logCurl(IsolateHttpRequest isolateRequest) async {
+    if (_logCurlListener != null) {
+      final _request = await isolateRequest.toRequest();
+      if (_request != null) {
+        final _curl = LogUtils.getCurl(_request);
+        _logCurlListener!(_curl);
+      } else {
+        throw ArgumentError('request is null.');
+      }
+    }
+  }
 
   /// Create an IsolateHttp
   ///
@@ -32,6 +50,7 @@ class IsolateHttp {
       {Map<String, String>? query, Map<String, String>? headers}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.head, query: query, headers: headers);
+    _logCurl(_isolateHttpRequest);
     return send(_isolateHttpRequest);
   }
 
@@ -40,6 +59,7 @@ class IsolateHttp {
       {Map<String, String>? query, Map<String, String>? headers}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.get, query: query, headers: headers);
+    _logCurl(_isolateHttpRequest);
     return send(_isolateHttpRequest);
   }
 
@@ -55,6 +75,7 @@ class IsolateHttp {
         headers: headers,
         body: body,
         files: files);
+    _logCurl(_isolateHttpRequest);
     return send(_isolateHttpRequest);
   }
 
@@ -70,6 +91,7 @@ class IsolateHttp {
         headers: headers,
         body: body,
         files: files);
+    _logCurl(_isolateHttpRequest);
     return send(_isolateHttpRequest);
   }
 
@@ -80,6 +102,7 @@ class IsolateHttp {
       Map<String, dynamic>? body}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.delete, query: query, headers: headers, body: body);
+    _logCurl(_isolateHttpRequest);
     return send(_isolateHttpRequest);
   }
 
@@ -109,7 +132,8 @@ Future<IsolateHttpResponse?> _call(
     final streamedResponse = await _request.send();
     final httpResponse = await Response.fromStream(streamedResponse);
     final _isolateHttpResponse = IsolateHttpResponse(
-        httpResponse.body, httpResponse.statusCode, httpResponse.headers);
+        httpResponse.body, httpResponse.statusCode, httpResponse.headers,
+        request: isolateHttpRequest, contentLength: httpResponse.contentLength);
     return _isolateHttpResponse;
   }
   return null;

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
-import 'package:isolate_http/src/http_file.dart';
-import 'package:isolate_http/src/http_method.dart';
+import 'http_file.dart';
+import 'http_method.dart';
 
 /// The request using for Isolate Http.
 class IsolateHttpRequest {
@@ -28,6 +28,20 @@ class IsolateHttpRequest {
   /// List of files to be uploaded of the request.
   final List<HttpFile>? files;
 
+  /// The size of the request body, in bytes.
+  ///
+  /// This defaults to `null`, which indicates that the size of the request is
+  /// not known in advance. May not be assigned a negative value.
+  int? get contentLength => _contentLength;
+  int? _contentLength;
+
+  set contentLength(int? value) {
+    if (value != null && value < 0) {
+      throw ArgumentError('Invalid content length $value.');
+    }
+    _contentLength = value;
+  }
+
   /// The request using for Isolate Http.
   ///
   /// [url] The url to which the request will be sent.
@@ -41,14 +55,12 @@ class IsolateHttpRequest {
   /// [body] The body of the request.
   ///
   /// [files] List of files (HttpFile) to be uploaded of the request.
-  IsolateHttpRequest(
-    this.url, {
-    this.method = HttpMethod.get,
-    this.query,
-    this.headers,
-    this.body,
-    this.files,
-  });
+  IsolateHttpRequest(this.url,
+      {this.method = HttpMethod.get,
+      this.query,
+      this.headers,
+      this.body,
+      this.files});
 
   /// Convert [url] and [query] to full link request (Uri)
   Uri? get uri {
