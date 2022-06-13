@@ -9,7 +9,11 @@ IsolateHttp provides a way to launch [http package][http_pub_url] with [IsolateF
 Performing a `GET` request:
 
 ```dart
-final _response = await IsolateHttp().get('https://example.com/product',
+final _isolateHttp = IsolateHttp();
+```
+
+```dart
+final _response = await _isolateHttp.get('https://example.com/product',
     headers: {'Authorization': 'abc='});
 print(_response);
 ```
@@ -17,7 +21,7 @@ print(_response);
 Performing a `POST` request:
 
 ```dart
-final _response = await IsolateHttp().post('https://example.com/product',
+final _response = await _isolateHttp.post('https://example.com/product',
     headers: {'Authorization': 'abc='},
     body: {'size': 'XL', 'price': 236},
     files: [
@@ -29,18 +33,28 @@ print(_response);
 Performing a `DELETE` request:
 
 ```dart
-final _response = await IsolateHttp().delete('https://example.com/product/1',
+final _response = await _isolateHttp.delete('https://example.com/product/1',
     headers: {'Authorization': 'abc='});
 print(_response);
 ```
 
-*** You can set a timeout and debug label for your request when creating an IsolateHttp like:
+\*\*\* You can set a timeout and debug label for your request when creating an IsolateHttp like:
 
 ```dart
-IsolateHttp(timeout: Duration(seconds: 30), debugLabel: 'get_products')
+final _isolateHttp =  IsolateHttp(timeout: Duration(seconds: 30), debugLabel: 'get_products')
 ```
 
 If timeout, its returns you an IsolateHttpResponse with status code 408 (Request Timeout).
+
+### Log Curl
+
+```dart
+_isolateHttp.listener = (curl) {
+    if (kDebugMode) {
+      log('Isolate Http -> Curl: ----------------\n$curl\n----------------');
+    }
+  };
+```
 
 ## Author
 
@@ -50,8 +64,7 @@ If you like my project, you can support me [![Buy Me A Coffee][buy_me_a_coffee_i
 
 Thank you! ❤️
 
-[//]: # (reference links)
-
+[//]: # 'reference links'
 [http_pub_url]: https://pub.dev/packages/http
 [isolate_flutter_pub_url]: https://pub.dev/packages/isolate_flutter
 [pub_url]: https://pub.dev/packages/isolate_http
