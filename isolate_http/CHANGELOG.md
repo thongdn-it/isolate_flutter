@@ -1,3 +1,7 @@
+# [2.3.0] - 30/06/2022
+
+- Support multiple content-type headers.
+
 # [2.2.0] - 13/06/2022
 
 - Add log CURL.
