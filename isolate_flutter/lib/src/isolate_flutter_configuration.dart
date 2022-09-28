@@ -11,11 +11,7 @@ class IsolateFlutterConfiguration<Q, R> {
   final String? debugLabel;
 
   IsolateFlutterConfiguration(
-    this.callback,
-    this.message,
-    this.resultPort,
-    this.debugLabel,
-  );
+      this.callback, this.message, this.resultPort, this.debugLabel);
 
   FutureOr<R> apply() => callback(message);
 }
