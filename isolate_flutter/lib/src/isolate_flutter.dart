@@ -16,9 +16,9 @@ class IsolateFlutter {
 
   Isolate? _isolate;
 
-  ReceivePort? _resultPort, _exitPort, _errorPort;
+  late RawReceivePort _port;
 
-  late Completer _completer;
+  late Completer<dynamic> _completer;
 
   IsolateFlutter._();
 
@@ -49,52 +49,30 @@ class IsolateFlutter {
     final _debugLabel =
         debugLabel ?? 'IsolateFlutter_${_isolateFlutter.hashCode}';
 
-    // Create ReceivePort
-    _isolateFlutter._resultPort = ReceivePort();
-    _isolateFlutter._exitPort = ReceivePort();
-    _isolateFlutter._errorPort = ReceivePort();
-
     // Create Completer
-    _isolateFlutter._completer = Completer<R>();
+    _isolateFlutter._completer = Completer<dynamic>();
+
+    // Create ReceivePort
+    _isolateFlutter._port = RawReceivePort((dynamic msg) {
+      _isolateFlutter._completer.complete(msg);
+      _isolateFlutter.stop();
+    }, _debugLabel);
 
     // Swap an isolate
-    _isolateFlutter._isolate = await Isolate.spawn(
-      _spawn,
-      IsolateFlutterConfiguration<Q, FutureOr<R>>(
-        callback,
-        message,
-        _isolateFlutter._resultPort!.sendPort,
-        _debugLabel,
-      ),
-      onError: _isolateFlutter._errorPort?.sendPort,
-      onExit: _isolateFlutter._exitPort?.sendPort,
-      debugName: _debugLabel,
-      paused: true,
-    );
-
-    // create listen
-    _isolateFlutter._errorPort?.listen((dynamic errorData) {
-      if (!_isolateFlutter._completer.isCompleted) {
-        _isolateFlutter._completer.completeError(errorData);
-        _isolateFlutter.stop();
-      }
-    });
-
-    _isolateFlutter._exitPort?.listen((dynamic exitData) {
-      if (!_isolateFlutter._completer.isCompleted) {
-        _isolateFlutter._completer.completeError(Exception(
-            'IsolateFlutter -> Isolate exited without result or error.'));
-        _isolateFlutter.stop();
-      }
-    });
-
-    _isolateFlutter._resultPort?.listen((dynamic resultData) {
-      assert(resultData == null || resultData is R);
-      if (!_isolateFlutter._completer.isCompleted) {
-        _isolateFlutter._completer.complete(resultData as R);
-        _isolateFlutter.stop();
-      }
-    });
+    try {
+      final _sendPort = _isolateFlutter._port.sendPort;
+      _isolateFlutter._isolate = await Isolate.spawn(
+          _spawn,
+          IsolateFlutterConfiguration<Q, FutureOr<R>>(
+              callback, message, _sendPort, _debugLabel),
+          errorsAreFatal: true,
+          onError: _sendPort,
+          onExit: _sendPort,
+          debugName: _debugLabel,
+          paused: true);
+    } catch (e) {
+      throw RemoteError('IsolateFlutter cann`t be created.', '');
+    }
 
     _isolateFlutter._status = IsolateFlutterStatus.Paused;
 
@@ -133,7 +111,28 @@ class IsolateFlutter {
     resume();
     final _result = await _completer.future;
 
-    return _result;
+    if (_result == null) {
+      throw RemoteError('IsolateFlutter exited with null.', '');
+    }
+
+    if (_result is List<dynamic>) {
+      final _type = _result.length;
+      switch (_type) {
+        case 1:
+          return _result[0] as R;
+        case 2:
+          await Future<Never>.error(
+              RemoteError(_result[0] as String, _result[1] as String));
+        case 3:
+          await Future<Never>.error(
+              _result[0] as Object, _result[1] as StackTrace);
+        default:
+          throw RemoteError(
+              'IsolateFlutter exited without result or error.', '');
+      }
+    } else {
+      throw RemoteError('IsolateFlutter exited without result or error.', '');
+    }
   }
 
   /// Pause the current isolate
@@ -154,13 +153,7 @@ class IsolateFlutter {
   void stop() {
     _isolate?.kill();
 
-    _resultPort?.close();
-    _errorPort?.close();
-    _exitPort?.close();
-
-    _resultPort = null;
-    _errorPort = null;
-    _exitPort = null;
+    _port.close();
     _isolate = null;
     _status = IsolateFlutterStatus.Stopped;
   }
@@ -172,9 +165,16 @@ class IsolateFlutter {
 }
 
 Future<void> _spawn<Q, R>(
-    IsolateFlutterConfiguration<Q, FutureOr<R>> configuration) async {
-  final FutureOr<R> applicationResult =
-      await (configuration.apply() as FutureOr<R>);
-  final result = await applicationResult;
-  configuration.resultPort.send(result);
+    IsolateFlutterConfiguration<Q, R> configuration) async {
+  late final List<dynamic> _applicationResult;
+
+  try {
+    _applicationResult = List<R>.filled(1, await (configuration.apply()));
+  } catch (error, stackTrace) {
+    _applicationResult = List<dynamic>.filled(3, null)
+      ..[0] = error
+      ..[1] = stackTrace;
+  }
+
+  Isolate.exit(configuration.resultPort, _applicationResult);
 }
