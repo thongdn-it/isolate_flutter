@@ -67,7 +67,7 @@ class IsolateHttp {
   Future<IsolateHttpResponse?> post(String url,
       {Map<String, String>? query,
       Map<String, String>? headers,
-      Map<String, dynamic>? body,
+      Object? body,
       List<HttpFile>? files}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.post,
@@ -83,7 +83,7 @@ class IsolateHttp {
   Future<IsolateHttpResponse?> put(String url,
       {Map<String, String>? query,
       Map<String, String>? headers,
-      Map<String, dynamic>? body,
+      Object? body,
       List<HttpFile>? files}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.put,
@@ -99,7 +99,7 @@ class IsolateHttp {
   Future<IsolateHttpResponse?> delete(String url,
       {Map<String, String>? query,
       Map<String, String>? headers,
-      Map<String, dynamic>? body}) async {
+      Object? body}) async {
     final _isolateHttpRequest = IsolateHttpRequest(url,
         method: HttpMethod.delete, query: query, headers: headers, body: body);
     _logCurl(_isolateHttpRequest);
