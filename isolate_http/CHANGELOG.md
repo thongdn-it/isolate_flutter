@@ -1,3 +1,7 @@
+# [3.0.0] - 05/01/2023
+
+- Update a dependency to the latest release.
+
 # [2.3.0] - 30/06/2022
 
 - Support multiple content-type headers.
