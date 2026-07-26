@@ -1,4 +1,4 @@
-library isolate_image_compress;
+library;
 
 export 'src/compress_utils.dart';
 export 'src/resize_utils.dart';

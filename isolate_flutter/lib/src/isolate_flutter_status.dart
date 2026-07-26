@@ -1,4 +1,4 @@
 /// Isolate Flutter Status
 ///
-/// define status for isolate: [Running], [Paused], [Stopped]
-enum IsolateFlutterStatus { Running, Paused, Stopped }
+/// define status for isolate: [running], [paused], [stopped]
+enum IsolateFlutterStatus { running, paused, stopped }

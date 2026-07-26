@@ -6,6 +6,21 @@ IsolateFlutter is a useful package for you who want to make and manage Isolate. 
 
 It's like [compute()](https://api.flutter.dev/flutter/foundation/compute-constant.html): *Spawn an isolate, run callback on that isolate, passing it message, and (eventually) return the value returned by callback*. But it not `top-level constant` so you can create multiple Isolates at the same time.
 
+## Requirements
+
+Flutter `>=3.35.0`, Dart `^3.9.0`. Verified against Flutter 3.44.
+
+## Installation
+
+```yaml
+dependencies:
+  isolate_flutter: ^4.0.0
+```
+
+```dart
+import 'package:isolate_flutter/isolate_flutter.dart';
+```
+
 ## Usage
 
 ### Create and start an isolate
@@ -17,45 +32,72 @@ print(_value);
 
 ### Create and manager an isolate (not run immediately)
 
-1. Create an isolate:
+1. Create an isolate. It returns `null` if the isolate could not be created:
 
     ```dart
-    IsolateFlutter _isolateFlutter = await IsolateFlutter.create(_testFunction, 'Hello World');
+    final IsolateFlutter? _isolateFlutter = await IsolateFlutter.create(_testFunction, 'Hello World');
     ```
 
 2. Start and get the value returned by _testFunction
 
     ```dart
-    final _value = await _isolateFlutter.start();
+    final _value = await _isolateFlutter?.start();
     print(_value);
     ```
 
 3. Pause a running isolate
 
     ```dart
-    _isolateFlutter.pause();
+    _isolateFlutter?.pause();
     ```
 
 4. Resume a paused isolate
 
     ```dart
-    _isolateFlutter.resume();
+    _isolateFlutter?.resume();
     ```
 
 5. Stop and dispose a an isolate
 
     ```dart
-    _isolateFlutter.stop();
+    _isolateFlutter?.stop();
     ```
+
+    `stop()` kills the isolate, so work that is still in flight is abandoned. The
+    `Future` returned by `start()` never completes in that case.
+
+### Reading the state
+
+```dart
+_isolateFlutter?.isRunning;
+_isolateFlutter?.isPaused;
+_isolateFlutter?.isStopped; // also true before the isolate has ever started
+```
 
 ### Example test function
 
+The callback must be a top-level function or a static method — it cannot be a
+closure or an instance method, because it has to be sent to another isolate.
+
 ```dart
-static Future<String> _testFunction(String message) async {
-    Timer.periodic(Duration(seconds: 1), (timer) => print('$message - ${timer.tick}'));
-    await Future.delayed(Duration(seconds: 30));
-    return '_testFunction finish';
-  }
+Future<String> _testFunction(String message) async {
+  Timer.periodic(const Duration(seconds: 1), (timer) => print('$message - ${timer.tick}'));
+  await Future<void>.delayed(const Duration(seconds: 30));
+  return '_testFunction finish';
+}
+```
+
+### Errors
+
+If the callback throws, the error and its stack trace are forwarded to the
+calling isolate, so `start()` / `createAndStart()` rethrow the original error:
+
+```dart
+try {
+  await IsolateFlutter.createAndStart(_testFunction, 'Hello World');
+} on StateError catch (e) {
+  print(e);
+}
 ```
 
 ## Author

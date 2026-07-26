@@ -108,19 +108,33 @@ class IsolateHttp {
 
   /// Sends an [IsolateHttpRequest] and returns the [IsolateHttpResponse].
   Future<IsolateHttpResponse?> send(IsolateHttpRequest request) async {
+    IsolateFlutter? _isolate;
     try {
-      final _isolateRequest = IsolateFlutter.createAndStart(_call, request,
-          debugLabel: _debugLabel);
+      _isolate =
+          await IsolateFlutter.create(_call, request, debugLabel: _debugLabel);
+
+      if (_isolate == null) {
+        return IsolateHttpResponse(
+            'IsolateHttp could not create an isolate.', 520, request.headers ?? {});
+      }
+
+      final _isolateRequest = _isolate.start<IsolateHttpResponse?>();
 
       if (_timeout == null) {
         return await _isolateRequest;
       } else {
-        return await _isolateRequest.timeout(_timeout!);
+        return await _isolateRequest.timeout(_timeout);
       }
     } on TimeoutException catch (e) {
       return IsolateHttpResponse(e.toString(), 408, request.headers ?? {});
     } on Exception catch (e) {
       return IsolateHttpResponse(e.toString(), 520, request.headers ?? {});
+    } finally {
+      // Once `send()` returns, nothing is left to collect the isolate's result,
+      // so it must not keep running. This matters most on timeout: without it
+      // the request would carry on in the background long after the caller got
+      // its 408. Stopping an already finished isolate is a no-op.
+      _isolate?.stop();
     }
   }
 }

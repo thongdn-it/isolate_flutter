@@ -1,0 +1,5 @@
+# Resolve isolate_flutter from this monorepo instead of pub.dev during local
+# development. Ignored by `dart pub publish`.
+dependency_overrides:
+  isolate_flutter:
+    path: ../isolate_flutter
