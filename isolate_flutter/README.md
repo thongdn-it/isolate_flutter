@@ -112,5 +112,5 @@ Thank you! ❤️
 
 [pub_url]: https://pub.dev/packages/isolate_flutter
 [pub_v_image_url]: https://img.shields.io/pub/v/isolate_flutter.svg
-[buy_me_a_coffee_image_url]: https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png
-[buy_me_a_coffee_url]: https://www.buymeacoffee.com/thongdn.it
+[buy_me_a_coffee_image_url]: https://buymeacoffee.com/assets/img/custom_images/orange_img.png
+[buy_me_a_coffee_url]: https://buymeacoffee.com/thongdn

@@ -62,5 +62,5 @@ Thank you! ❤️
 [http_pub_url]: https://pub.dev/packages/http
 [isolate_image_compress_pub_url]: https://pub.dev/packages/isolate_image_compress
 [isolate_image_compress_pub_v_image_url]: https://img.shields.io/pub/v/isolate_image_compress.svg
-[buy_me_a_coffee_image_url]: https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png
-[buy_me_a_coffee_url]: https://www.buymeacoffee.com/thongdn.it
+[buy_me_a_coffee_image_url]: https://buymeacoffee.com/assets/img/custom_images/orange_img.png
+[buy_me_a_coffee_url]: https://buymeacoffee.com/thongdn

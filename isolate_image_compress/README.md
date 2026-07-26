@@ -112,5 +112,5 @@ Thank you! ❤️
 [image_pub_url]: https://pub.dev/packages/image
 [pub_url]: https://pub.dev/packages/isolate_image_compress
 [pub_v_image_url]: https://img.shields.io/pub/v/isolate_image_compress.svg
-[buy_me_a_coffee_image_url]: https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png
-[buy_me_a_coffee_url]: https://www.buymeacoffee.com/thongdn.it
+[buy_me_a_coffee_image_url]: https://buymeacoffee.com/assets/img/custom_images/orange_img.png
+[buy_me_a_coffee_url]: https://buymeacoffee.com/thongdn
