@@ -1,5 +1,5 @@
-import 'package:http/http.dart';
-import 'package:http_parser/http_parser.dart';
+import 'package:http/http.dart' show MultipartFile, MultipartRequest;
+import 'package:http_parser/http_parser.dart' show MediaType;
 
 /// A file to be uploaded as part of a [IsolateHttp].
 class HttpFile {

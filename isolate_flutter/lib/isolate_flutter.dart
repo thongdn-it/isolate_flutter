@@ -1,3 +1,3 @@
-library isolate_flutter;
+library;
 
 export 'src/isolate_flutter.dart';

@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:image/image.dart';
+// `image` 4.x declares its own `ImageFormat`; hide it so this package's
+// `ImageFormat` (see src/constants/enums.dart) stays unambiguous.
+import 'package:image/image.dart' hide ImageFormat;
 import 'package:isolate_flutter/isolate_flutter.dart';
 
 import 'package:isolate_image_compress/src/constants/enums.dart';
@@ -72,7 +74,7 @@ Future<Uint8List> _compressImage(CompressParams params) async {
   }
 }
 
-Decoder? _getDecoder(ImageFormat format) {
+Decoder _getDecoder(ImageFormat format) {
   switch (format) {
     case ImageFormat.jpeg:
       return JpegDecoder();
@@ -82,8 +84,6 @@ Decoder? _getDecoder(ImageFormat format) {
       return TgaDecoder();
     case ImageFormat.gif:
       return GifDecoder();
-    default:
-      return null;
   }
 }
 

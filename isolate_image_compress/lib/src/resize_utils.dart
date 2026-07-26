@@ -1,4 +1,6 @@
-import 'package:image/image.dart';
+// `image` 4.x declares its own `ImageFormat`; hide it so this package's
+// `ImageFormat` (see src/constants/enums.dart) stays unambiguous.
+import 'package:image/image.dart' hide ImageFormat;
 
 import 'package:isolate_image_compress/src/constants/enums.dart';
 import 'package:isolate_image_compress/src/entity/isolate_image.dart';

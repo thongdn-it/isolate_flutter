@@ -1,22 +1,26 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:isolate_flutter/isolate_flutter.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'IsolateFlutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorSchemeSeed: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'IsolateFlutter Demo'),
+      home: const MyHomePage(title: 'IsolateFlutter Demo'),
     );
   }
 }
@@ -24,10 +28,10 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   final String title;
 
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -44,34 +48,34 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextButton.icon(
-              label: Text('Create'),
-              icon: Icon(Icons.create),
+              label: const Text('Create'),
+              icon: const Icon(Icons.create),
               onPressed: _onCreate,
             ),
             TextButton.icon(
-              label: Text('Start'),
-              icon: Icon(Icons.play_arrow),
+              label: const Text('Start'),
+              icon: const Icon(Icons.play_arrow),
               onPressed: _onStart,
             ),
             TextButton.icon(
-              label: Text('Pause'),
-              icon: Icon(Icons.pause),
+              label: const Text('Pause'),
+              icon: const Icon(Icons.pause),
               onPressed: _onPause,
             ),
             TextButton.icon(
-              label: Text('Resume'),
-              icon: Icon(Icons.play_arrow),
+              label: const Text('Resume'),
+              icon: const Icon(Icons.play_arrow),
               onPressed: _onResume,
             ),
             TextButton.icon(
-              label: Text('Stop'),
-              icon: Icon(Icons.stop),
+              label: const Text('Stop'),
+              icon: const Icon(Icons.stop),
               onPressed: _onStop,
             ),
-            Text('--- OR ---'),
+            const Text('--- OR ---'),
             TextButton.icon(
-              label: Text('Create and start'),
-              icon: Icon(Icons.playlist_play),
+              label: const Text('Create and start'),
+              icon: const Icon(Icons.playlist_play),
               onPressed: _onCreateAndStart,
             ),
           ],
@@ -115,8 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static Future<String> _testFunction(String message) async {
     Timer.periodic(
-        Duration(seconds: 1), (timer) => print('$message - ${timer.tick}'));
-    await Future.delayed(Duration(seconds: 30));
+        const Duration(seconds: 1), (timer) => print('$message - ${timer.tick}'));
+    await Future<void>.delayed(const Duration(seconds: 30));
     return '_testFunction finish';
   }
 }

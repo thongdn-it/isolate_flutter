@@ -1,5 +1,3 @@
-library isolate_flutter;
-
 import 'dart:async';
 import 'dart:isolate';
 
@@ -74,7 +72,7 @@ class IsolateFlutter {
       throw RemoteError('IsolateFlutter cann`t be created.', '');
     }
 
-    _isolateFlutter._status = IsolateFlutterStatus.Paused;
+    _isolateFlutter._status = IsolateFlutterStatus.paused;
 
     return _isolateFlutter;
   }
@@ -137,14 +135,14 @@ class IsolateFlutter {
 
   /// Pause the current isolate
   void pause() {
-    _status = IsolateFlutterStatus.Paused;
+    _status = IsolateFlutterStatus.paused;
     _isolate?.pause(_isolate?.pauseCapability);
   }
 
   /// Resume the current isolate
   void resume() {
     if (_isolate?.pauseCapability != null) {
-      _status = IsolateFlutterStatus.Running;
+      _status = IsolateFlutterStatus.running;
       _isolate?.resume(_isolate!.pauseCapability!);
     }
   }
@@ -155,13 +153,13 @@ class IsolateFlutter {
 
     _port.close();
     _isolate = null;
-    _status = IsolateFlutterStatus.Stopped;
+    _status = IsolateFlutterStatus.stopped;
   }
 
-  bool get isRunning => _status == IsolateFlutterStatus.Running;
-  bool get isPaused => _status == IsolateFlutterStatus.Paused;
+  bool get isRunning => _status == IsolateFlutterStatus.running;
+  bool get isPaused => _status == IsolateFlutterStatus.paused;
   bool get isStopped =>
-      _status == null || _status == IsolateFlutterStatus.Stopped;
+      _status == null || _status == IsolateFlutterStatus.stopped;
 }
 
 Future<void> _spawn<Q, R>(

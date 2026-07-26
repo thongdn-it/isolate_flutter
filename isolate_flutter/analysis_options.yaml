@@ -1,0 +1,9 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # This package consistently prefixes local variables with an underscore.
+    no_leading_underscores_for_local_identifiers: false
+
+# Additional information about this file can be found at
+# https://dart.dev/guides/language/analysis-options
